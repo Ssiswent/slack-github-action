@@ -1,0 +1,102 @@
+name: 'Slack Github Action'
+description: 'Post a rich Slack Block Kit notification for GitHub Actions runs'
+author: 'Ssiswent'
+branding:
+  icon: 'bell'
+  color: 'green'
+
+inputs:
+  webhook:
+    description: 'Slack Incoming Webhook URL (pass from caller secrets)'
+    required: true
+  is_success:
+    description: 'Boolean indicating success (true -> green #2FB886) or failure (false -> wine red #B22222)'
+    required: true
+  header_text:
+    description: 'Header title'
+    required: true
+  version_number:
+    description: 'Version number'
+    required: true
+  build_number:
+    description: 'Build number'
+    required: true
+  app_icon_url:
+    description: 'Right accessory image URL'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get current time
+      id: current-time
+      uses: josStorer/get-current-time@v2.1.2
+      with:
+        format: 'YYYY-MM-DD HH:mm:ss'
+        timezone: 'Asia/Shanghai'
+
+    - name: Get epoch seconds
+      id: epoch
+      shell: bash
+      run: echo "ts=$(date +%s)" >> "$GITHUB_OUTPUT"
+
+    - name: Get short SHA
+      id: vars
+      shell: bash
+      run: echo "sha_short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+    - name: Post a message in a channel
+      uses: slackapi/slack-github-action@v2.1.1
+      with:
+        webhook: ${{ inputs.webhook }}
+        webhook-type: incoming-webhook
+        payload: |
+          attachments:
+            - color: "${{ inputs.is_success == 'true' && '#2FB886' || '#B22222' }}"
+              blocks:
+                - type: header
+                  text:
+                    type: plain_text
+                    text: "${{ inputs.header_text }}"
+                    emoji: true
+                - type: section
+                  text:
+                    type: mrkdwn
+                    text: "${{ format('{0} *`{1}`*', (inputs.is_success == 'true' && '✅ Successfully released' || '❌ Error during release of'), (github.event_name == 'release' && github.ref_name || format('v{0}+{1}', inputs.version_number, inputs.build_number))) }}"
+                - type: section
+                  text:
+                    type: mrkdwn
+                    text: "${{ github.event_name == 'release' && format('Release notes: {0}', github.event.release.body) || 'Triggered manually' }}"
+                - type: divider
+                - type: context
+                  elements:
+                    - type: mrkdwn
+                      text: "*Repo*: <${{ github.server_url }}/${{ github.repository }}|${{ github.event.repository.name }}>"
+                    - type: mrkdwn
+                      text: "*Actor*: `${{ github.actor }}`"
+                    - type: mrkdwn
+                      text: "*Event*: `${{ github.event_name }}`"
+                - type: divider
+                - type: section
+                  fields:
+                    - type: mrkdwn
+                      text: "*Ref*\n`${{ github.ref }}`"
+                    - type: mrkdwn
+                      text: "*Workflow*\n`${{ github.workflow }}`"
+                    - type: mrkdwn
+                      text: "*Actions URL*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Open Workflow Run>"
+                    - type: mrkdwn
+                      text: "*Commit*\n<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ steps.vars.outputs.sha_short }}>"
+                  accessory:
+                    type: image
+                    image_url: "${{ inputs.app_icon_url || 'https://raw.githubusercontent.com/Ssiswent/myBlogResource/refs/heads/main/images/GitHubActionsIcon-360.png' }}"
+                    alt_text: "${{ github.event.repository.name }}"
+                - type: context
+                  elements:
+                    - type: image
+                      image_url: "https://raw.githubusercontent.com/Ssiswent/myBlogResource/refs/heads/main/images/github-actions-logo-128.png"
+                      alt_text: "GitHub Actions"
+                    - type: mrkdwn
+                      text: "*GitHub Actions* | *<!date^${{ steps.epoch.outputs.ts }}^{date_num} {time_secs}|${{ steps.current-time.outputs.formattedTime }}>*"
+    
+    
