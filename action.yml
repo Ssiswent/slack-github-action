@@ -1,4 +1,4 @@
-name: 'Slack Github Action'
+name: 'Slack Github Action - Ssiswent'
 description: 'Post a rich Slack Block Kit notification for GitHub Actions runs'
 author: 'Ssiswent'
 branding:
