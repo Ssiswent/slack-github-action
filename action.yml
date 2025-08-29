@@ -25,7 +25,7 @@ inputs:
     description: 'Right accessory image URL'
     required: false
   commit_result:
-    description: 'Final version commit result: success | failure | skipped | n/a'
+    description: 'Final version commit result: success | failure | cancelled | skipped'
     required: false
   commit_url:
     description: 'URL of the final version commit'
