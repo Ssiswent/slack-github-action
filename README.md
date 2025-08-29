@@ -15,6 +15,7 @@ It standardizes success/failure formatting, links to your workflow run and commi
 - Short SHA badge, timestamp, repo/actor/event context
 - Release-aware: shows tag and “Release notes” when `on: release`
 - Simple boolean input `is_success` to drive color and status prefix
+- Version commit summary: shows "Version Commit Status" (✅ Success / ❌ Failure / 🟨 Cancelled / ⏭️ Skipped) and a link when available
 
 ## Inputs
 
@@ -24,11 +25,15 @@ It standardizes success/failure formatting, links to your workflow run and commi
 - version_number (required): Semantic version (e.g., 1.2.3) when not running on a release event
 - build_number (required): Build number (e.g., 42) when not running on a release event
 - app_icon_url (optional): Accessory image URL shown on the right in the fields section
+- commit_result (optional): Final version commit result. One of `success | failure | cancelled | skipped`. Any other value falls back to `N/A`.
+- commit_url (optional): URL of the version commit. Only shown when `commit_result == 'success'` and both `commit_url` and `commit_message` are present.
+- commit_message (optional): Text used for the version commit link title.
 
 Notes:
 - GitHub Actions passes composite action inputs as strings. This action compares `is_success` to the literal string 'true'.
 - When event is “release”, the tag (`github.ref_name`) is displayed and the second line shows “Release notes: …”.
 - When not “release”, it displays `v<version_number>+<build_number>` and “Triggered manually”.
+- The "Version Commit Status" line capitalizes labels: Success, Failure, Cancelled, Skipped; fallback is `N/A`.
 
 ## Usage
 
@@ -75,6 +80,10 @@ jobs:
           version_number: ${{ inputs.version_number }}
           build_number: ${{ inputs.build_number }}
           app_icon_url: ${{ inputs.app_icon_url }}
+          # Optional version commit details
+          commit_result: 'skipped'
+          commit_url: ''
+          commit_message: ''
 ```
 
 ### Release Event Example (auto release notes)
@@ -98,6 +107,10 @@ jobs:
           header_text: 'Android Release - Play Store'
           version_number: '0.0.0'                     # ignored for release event
           build_number: '0'                           # ignored for release event
+          # Optionally pass commit info if you have it
+          commit_result: 'success'
+          commit_url: 'https://github.com/owner/repo/commit/abc1234'
+          commit_message: 'Update version to 1.2.3+45'
 ```
 
 ### Using a Build Job Result
@@ -121,6 +134,10 @@ jobs:
           header_text: 'Android Release - Play Store'
           version_number: '1.0.0'
           build_number: '42'
+          # If you have a downstream commit job, you can surface it here
+          commit_result: ${{ needs.commit_version.result }}
+          commit_url: ${{ needs.commit_version.outputs.commit_url }}
+          commit_message: ${{ needs.commit_version.outputs.commit_message }}
 ```
 
 ## Security and Secrets
