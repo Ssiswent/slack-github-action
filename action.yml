@@ -24,6 +24,15 @@ inputs:
   app_icon_url:
     description: 'Right accessory image URL'
     required: false
+  commit_result:
+    description: 'Final version commit result: success | failure | skipped | n/a'
+    required: false
+  commit_url:
+    description: 'URL of the final version commit'
+    required: false
+  commit_message:
+    description: 'Message of the final version commit; used as the link text'
+    required: false
 
 runs:
   using: 'composite'
@@ -87,6 +96,10 @@ runs:
                       text: "*Actions URL*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Open Workflow Run>"
                     - type: mrkdwn
                       text: "*Commit*\n<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ steps.vars.outputs.sha_short }}>"
+                    - type: mrkdwn
+                      text: "*Version Commit Status*\n${{ inputs.commit_result == 'success' && '✅ Success' || inputs.commit_result == 'failure' && '❌ Failure' || inputs.commit_result == 'cancelled' && '🟨 Cancelled' || inputs.commit_result == 'skipped' && '⏭️ Skipped' || inputs.commit_result || 'N/A' }}"
+                    - type: mrkdwn
+                      text: "*Version Commit Link*\n${{ inputs.commit_result == 'success' && inputs.commit_url && inputs.commit_message && format('<{0}|{1}>', inputs.commit_url, inputs.commit_message) || 'N/A' }}"
                   accessory:
                     type: image
                     image_url: "${{ inputs.app_icon_url || 'https://raw.githubusercontent.com/Ssiswent/myBlogResource/refs/heads/main/images/GitHubActionsIcon-360.png' }}"
