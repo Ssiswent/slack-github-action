@@ -17,6 +17,33 @@ It standardizes success/failure formatting, links to your workflow run and commi
 - Simple boolean input `is_success` to drive color and status prefix
 - Version commit summary: shows "Version Commit Status" (✅ Success / ❌ Failure / 🟨 Cancelled / ⏭️ Skipped) and a link when available
 
+## Preview
+
+<table style="width:100%;table-layout:fixed;border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th align="center">✅ Success</th>
+      <th align="center">❌ Failure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding:6px;"><img src="./preview/success.png" alt="Slack Notification - Success preview showing green theme and passed Version Commit Status" width="98%" style="border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 2px 12px rgba(0,0,0,.08);" /></td>
+      <td style="padding:6px;"><img src="./preview/failure.png" alt="Slack Notification - Failure preview showing red theme and failed Version Commit Status" width="98%" style="border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 2px 12px rgba(0,0,0,.08);" /></td>
+    </tr>
+    <tr>
+      <td align="center"><sub>Example message for a successful run</sub></td>
+      <td align="center"><sub>Example message for a failed run</sub></td>
+    </tr>
+  </tbody>
+</table>
+
+<p align="center">
+  <sub>Colors: success → <code>#2FB886</code>, failure → <code>#B22222</code>. Includes header, context (repo • actor • event • time), links (workflow run, commit), and Version Commit Status.</sub>
+  <br/>
+  <sub>Rendered with Slack Block Kit; visuals may vary by workspace theme.</sub>
+</p>
+
 ## Inputs
 
 - webhook (required): Slack Incoming Webhook URL (pass from caller repository via secrets)
