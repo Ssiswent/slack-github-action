@@ -28,8 +28,8 @@ It standardizes success/failure formatting, links to your workflow run and commi
   </thead>
   <tbody>
     <tr>
-      <td style="padding:6px;"><img src="./preview/success.png" alt="Slack Notification - Success preview showing green theme and passed Version Commit Status" width="98%" style="border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 2px 12px rgba(0,0,0,.08);" /></td>
-      <td style="padding:6px;"><img src="./preview/failure.png" alt="Slack Notification - Failure preview showing red theme and failed Version Commit Status" width="98%" style="border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 2px 12px rgba(0,0,0,.08);" /></td>
+      <td style="padding:6px;"><img src="./preview/success_preview.png" alt="Slack Notification - Success preview showing green theme and passed Version Commit Status" width="98%" style="border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 2px 12px rgba(0,0,0,.08);" /></td>
+      <td style="padding:6px;"><img src="./preview/failure_preview.png" alt="Slack Notification - Failure preview showing red theme and failed Version Commit Status" width="98%" style="border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 2px 12px rgba(0,0,0,.08);" /></td>
     </tr>
     <tr>
       <td align="center"><sub>Example message for a successful run</sub></td>
